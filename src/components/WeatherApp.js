@@ -12,7 +12,7 @@ export default function WeatherApp() {
       setError(null);
 
       const res = await fetch(
-        `https://api.weatherapi.com/v1/current.json?key=${process.env.REACT_APP_WEATHERAPI_KEY}&q=${city}`
+        `https://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_WEATHERAPI_KEY}&q=${city}&days=7`
       );
       const data = await res.json();
 
@@ -61,6 +61,33 @@ export default function WeatherApp() {
           <img src={weather.current.condition.icon} alt="weather icon" />
         </div>
       )}
+      {weather && (
+        <div className="max-w-md mx-auto mt-6">
+          <h2 className="text-xl font-bold text-white mb-2">7-Day Forecast</h2>
+          <div className="grid grid-cols-1 gap-4">
+            {weather.forecast.forecastday.map((day) => (
+              <div
+                key={day.date}
+                className="bg-white bg-opacity-90 rounded-lg p-4 shadow"
+              >
+                <p className="font-semibold">{day.date}</p>
+                <div className="flex items-center gap-2">
+                  <img
+                    src={day.day.condition.icon}
+                    alt={day.day.condition.text}
+                    className="w-8 h-8"
+                  />
+                  <p>{day.day.condition.text}</p>
+                </div>
+                <p>
+                  {day.day.mintemp_c}°C — {day.day.maxtemp_c}°C
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
