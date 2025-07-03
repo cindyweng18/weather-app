@@ -5,6 +5,7 @@ export default function WeatherApp() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedDay, setSelectedDay] = useState(null);
 
   const fetchWeather = async (city) => {
     try {
@@ -37,7 +38,7 @@ export default function WeatherApp() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-200 to-indigo-300 p-6">
-      <h1 className="text-3xl font-bold mb-4 text-center text-white">Weather App </h1>
+      <h1 className="text-3xl font-bold mb-4 text-center text-white">Weather App</h1>
       <div className="max-w-md mx-auto">
         <input
           type="text"
@@ -61,6 +62,7 @@ export default function WeatherApp() {
           <img src={weather.current.condition.icon} alt="weather icon" />
         </div>
       )}
+
       {weather && (
         <div className="max-w-md mx-auto mt-6">
           <h2 className="text-xl font-bold text-white mb-2">7-Day Forecast</h2>
@@ -68,7 +70,10 @@ export default function WeatherApp() {
             {weather.forecast.forecastday.map((day) => (
               <div
                 key={day.date}
-                className="bg-white bg-opacity-90 rounded-lg p-4 shadow"
+                className="bg-white bg-opacity-90 rounded-lg p-4 shadow cursor-pointer"
+                onClick={() =>
+                  setSelectedDay(selectedDay === day.date ? null : day.date)
+                }
               >
                 <p className="font-semibold">{day.date}</p>
                 <div className="flex items-center gap-2">
@@ -82,12 +87,32 @@ export default function WeatherApp() {
                 <p>
                   {day.day.mintemp_c}°C — {day.day.maxtemp_c}°C
                 </p>
+
+                {selectedDay === day.date && (
+                  <div className="mt-2 space-y-1 max-h-72 overflow-y-auto">
+                    {day.hour.map((hour) => (
+                      <div
+                        key={hour.time_epoch}
+                        className="flex justify-between text-sm border-b pb-1"
+                      >
+                        <p>{hour.time.split(" ")[1]}</p>
+                        <div className="flex items-center gap-2">
+                          <img
+                            src={hour.condition.icon}
+                            alt={hour.condition.text}
+                            className="w-5 h-5"
+                          />
+                          <span>{hour.temp_c}°C</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       )}
-
     </div>
   );
 }
