@@ -36,9 +36,15 @@ export default function WeatherApp() {
     }
   };
 
+  const formatDate = (dateStr) => {
+    const options = { weekday: 'long', month: 'short', day: 'numeric' };
+    const date = new Date(dateStr);
+    return date.toLocaleDateString(undefined, options);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-200 to-indigo-300 p-6">
-      <h1 className="text-3xl font-bold mb-4 text-center text-white">Weather App</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center text-white">SkyCast Pro</h1>
       <div className="max-w-md mx-auto">
         <input
           type="text"
@@ -75,7 +81,7 @@ export default function WeatherApp() {
                   setSelectedDay(selectedDay === day.date ? null : day.date)
                 }
               >
-                <p className="font-semibold">{day.date}</p>
+                <p className="font-semibold">{formatDate(day.date)}</p>
                 <div className="flex items-center gap-2">
                   <img
                     src={day.day.condition.icon}
