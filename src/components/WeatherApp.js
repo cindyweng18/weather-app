@@ -46,14 +46,22 @@ export default function WeatherApp() {
     <div className="min-h-screen bg-gradient-to-br from-sky-200 to-indigo-300 p-6">
       <h1 className="text-3xl font-bold mb-4 text-center text-white">SkyCast Pro</h1>
       <div className="max-w-md mx-auto">
-        <input
-          type="text"
-          className="w-full px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring focus:border-blue-300"
-          placeholder="Enter city name..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={handleKeyDown}
-        />
+        <div className="flex gap-2">
+          <input
+            type="text"
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+            placeholder="Enter city name..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+          />
+          <button
+            onClick={() => fetchWeather(query)}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
+          >
+            Enter
+          </button>
+        </div>
       </div>
 
       {loading && <p className="text-center mt-4 text-white">Loading...</p>}
