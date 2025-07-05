@@ -1,4 +1,5 @@
 import { useState } from "react";
+import NavBar from "./NavBar";
 
 export default function WeatherApp() {
   const [query, setQuery] = useState("");
@@ -6,6 +7,9 @@ export default function WeatherApp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
+  const [isFahrenheit, setIsFahrenheit] = useState(false);
+  const [is24Hour, setIs24Hour] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const fetchWeather = async (city) => {
     try {
@@ -43,8 +47,16 @@ export default function WeatherApp() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-200 to-indigo-300 p-6">
-      <h1 className="text-3xl font-bold mb-4 text-center text-white">SkyCast Pro</h1>
+    <div className={isDarkMode ? "dark min-h-screen bg-gradient-to-br from-gray-900 to-gray-700 p-6" : "min-h-screen bg-gradient-to-br from-sky-200 to-indigo-300 p-6"}>
+      <NavBar
+        isFahrenheit={isFahrenheit}
+        setIsFahrenheit={setIsFahrenheit}
+        is24Hour={is24Hour}
+        setIs24Hour={setIs24Hour}
+        isDarkMode={isDarkMode}
+        setIsDarkMode={setIsDarkMode}
+      />
+
       <div className="max-w-md mx-auto">
         <div className="flex gap-2">
           <input
@@ -68,10 +80,10 @@ export default function WeatherApp() {
       {error && <p className="text-center mt-4 text-red-600">{error}</p>}
 
       {weather && (
-        <div className="max-w-md mx-auto mt-6 bg-white rounded-lg shadow-lg p-4">
+        <div className="max-w-md mx-auto mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 text-gray-900 dark:text-white">
           <h2 className="text-xl font-semibold">Current Weather</h2>
           <p>Location: {weather.location.name}, {weather.location.country}</p>
-          <p>Temperature: {weather.current.temp_c}°C</p>
+          <p>Temperature: {isFahrenheit ? weather.current.temp_f : weather.current.temp_c}°{isFahrenheit ? "F" : "C"}</p>
           <p>Condition: {weather.current.condition.text}</p>
           <img src={weather.current.condition.icon} alt="weather icon" />
         </div>
@@ -84,7 +96,7 @@ export default function WeatherApp() {
             {weather.forecast.forecastday.map((day) => (
               <div
                 key={day.date}
-                className="bg-white bg-opacity-90 rounded-lg p-4 shadow cursor-pointer"
+                className="bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white rounded-lg p-4 shadow cursor-pointer"
                 onClick={() =>
                   setSelectedDay(selectedDay === day.date ? null : day.date)
                 }
@@ -99,7 +111,7 @@ export default function WeatherApp() {
                   <p>{day.day.condition.text}</p>
                 </div>
                 <p>
-                  {day.day.mintemp_c}°C — {day.day.maxtemp_c}°C
+                  {isFahrenheit ? day.day.mintemp_f : day.day.mintemp_c}°{isFahrenheit ? "F" : "C"} — {isFahrenheit ? day.day.maxtemp_f : day.day.maxtemp_c}°{isFahrenheit ? "F" : "C"}
                 </p>
 
                 {selectedDay === day.date && (
@@ -109,14 +121,22 @@ export default function WeatherApp() {
                         key={hour.time_epoch}
                         className="flex justify-between text-sm border-b pb-1"
                       >
-                        <p>{hour.time.split(" ")[1]}</p>
+                        <p>
+                          {is24Hour
+                            ? hour.time.split(" ")[1]
+                            : new Date(hour.time).toLocaleTimeString(undefined, {
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true,
+                              })}
+                        </p>
                         <div className="flex items-center gap-2">
                           <img
                             src={hour.condition.icon}
                             alt={hour.condition.text}
                             className="w-5 h-5"
                           />
-                          <span>{hour.temp_c}°C</span>
+                          <span>{isFahrenheit ? hour.temp_f : hour.temp_c}°{isFahrenheit ? "F" : "C"}</span>
                         </div>
                       </div>
                     ))}
