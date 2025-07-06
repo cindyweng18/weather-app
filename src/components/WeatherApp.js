@@ -48,14 +48,51 @@ export default function WeatherApp() {
 
   return (
     <div className={isDarkMode ? "dark min-h-screen bg-gradient-to-br from-gray-900 to-gray-700 p-6" : "min-h-screen bg-gradient-to-br from-sky-200 to-indigo-300 p-6"}>
-      <NavBar
-        isFahrenheit={isFahrenheit}
-        setIsFahrenheit={setIsFahrenheit}
-        is24Hour={is24Hour}
-        setIs24Hour={setIs24Hour}
-        isDarkMode={isDarkMode}
-        setIsDarkMode={setIsDarkMode}
-      />
+      <NavBar />
+
+      <div className="flex flex-wrap justify-center gap-6 mb-6 max-w-xl mx-auto text-sm text-gray-800 dark:text-white">
+        <div className="flex items-center gap-2">
+          <span>°C</span>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isFahrenheit}
+              onChange={() => setIsFahrenheit(!isFahrenheit)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:bg-gray-600 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
+          <span>°F</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span>12h</span>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={is24Hour}
+              onChange={() => setIs24Hour(!is24Hour)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:bg-gray-600 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
+          <span>24h</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span>☀️</span>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={isDarkMode}
+              onChange={() => setIsDarkMode(!isDarkMode)}
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 dark:bg-gray-600 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
+          <span>🌙</span>
+        </div>
+      </div>
 
       <div className="max-w-md mx-auto">
         <div className="flex gap-2">
