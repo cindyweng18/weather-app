@@ -1,5 +1,6 @@
 import { useState } from "react";
 import NavBar from "./NavBar";
+import Settings from "./Settings";
 
 export default function WeatherApp() {
   const [query, setQuery] = useState("");
@@ -51,7 +52,7 @@ export default function WeatherApp() {
     <div className={isDarkMode ? "dark min-h-screen bg-gradient-to-br from-gray-900 to-gray-700 p-6" : "min-h-screen bg-gradient-to-br from-sky-200 to-indigo-300 p-6"}>
       <NavBar onOpenSettings={() => setShowSettings(true)} />
       {showSettings && (
-        <SettingsPanel
+        <Settings
           isFahrenheit={isFahrenheit}
           setIsFahrenheit={setIsFahrenheit}
           is24Hour={is24Hour}
