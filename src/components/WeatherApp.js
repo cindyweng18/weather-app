@@ -12,6 +12,7 @@ export default function WeatherApp() {
   const [is24Hour, setIs24Hour] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
 
   const fetchWeather = async (city) => {
     try {
@@ -42,6 +43,26 @@ export default function WeatherApp() {
     }
   };
 
+  const handleInputChange = async (e) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    if (value.length > 2) {
+      try {
+        const res = await fetch(
+          `https://api.weatherapi.com/v1/search.json?key=${process.env.REACT_APP_WEATHERAPI_KEY}&q=${value}`
+        );
+        const data = await res.json();
+        setSuggestions(data);
+      } catch (err) {
+        console.error("Autocomplete failed:", err);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+
   const formatDate = (dateStr) => {
     const options = { weekday: 'long', month: 'short', day: 'numeric' };
     const date = new Date(dateStr);
@@ -70,9 +91,26 @@ export default function WeatherApp() {
             className="w-full px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring focus:border-blue-300"
             placeholder="Enter city name..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={handleInputChange}
             onKeyDown={handleKeyDown}
           />
+          {suggestions.length > 0 && (
+            <ul className="bg-white border border-gray-300 rounded-lg shadow mt-1 max-h-60 overflow-y-auto text-black">
+              {suggestions.map((item) => (
+                <li
+                  key={item.id}
+                  onClick={() => {
+                    setQuery(item.name);
+                    setSuggestions([]);
+                    fetchWeather(item.name);
+                  }}
+                  className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
+                >
+                  {item.name}, {item.country}
+                </li>
+              ))}
+            </ul>
+          )}
           <button
             onClick={() => fetchWeather(query)}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
