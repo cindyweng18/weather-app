@@ -85,17 +85,26 @@ export default function WeatherApp() {
       )}
 
       <div className="max-w-md mx-auto">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring focus:border-blue-300"
-            placeholder="Enter city name..."
-            value={query}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-          />
+        <div className="relative">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+              placeholder="Enter city name..."
+              value={query}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+            />
+            <button
+              onClick={() => fetchWeather(query)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
+            >
+              Enter
+            </button>
+          </div>
+
           {suggestions.length > 0 && (
-            <ul className="bg-white border border-gray-300 rounded-lg shadow mt-1 max-h-60 overflow-y-auto text-black">
+            <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow mt-1 max-h-60 overflow-y-auto text-black">
               {suggestions.map((item) => (
                 <li
                   key={item.id}
@@ -111,12 +120,6 @@ export default function WeatherApp() {
               ))}
             </ul>
           )}
-          <button
-            onClick={() => fetchWeather(query)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
-          >
-            Enter
-          </button>
         </div>
       </div>
 
