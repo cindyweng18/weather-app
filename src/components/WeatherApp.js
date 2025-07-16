@@ -71,7 +71,10 @@ export default function WeatherApp() {
 
   return (
     <div className={isDarkMode ? "dark min-h-screen bg-gradient-to-br from-gray-900 to-gray-700 p-6" : "min-h-screen bg-gradient-to-br from-sky-200 to-indigo-300 p-6"}>
-      <NavBar onOpenSettings={() => setShowSettings(true)} />
+      <NavBar
+        isDarkMode={isDarkMode}
+        onOpenSettings={() => setShowSettings(true)}
+      />
       {showSettings && (
         <Settings
           isFahrenheit={isFahrenheit}
@@ -127,7 +130,11 @@ export default function WeatherApp() {
       {error && <p className="text-center mt-4 text-red-600">{error}</p>}
 
       {weather && (
-        <div className="max-w-md mx-auto mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 text-gray-900 dark:text-white">
+        <div
+          className={`max-w-md mx-auto mt-6 rounded-lg shadow-lg p-4 ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+          }`}
+        >
           <h2 className="text-xl font-semibold">Current Weather</h2>
           <p>Location: {weather.location.name}, {weather.location.country}</p>
           <p>Temperature: {isFahrenheit ? weather.current.temp_f : weather.current.temp_c}°{isFahrenheit ? "F" : "C"}</p>
