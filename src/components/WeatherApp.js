@@ -62,15 +62,20 @@ export default function WeatherApp() {
     }
   };
 
-
   const formatDate = (dateStr) => {
-    const options = { weekday: 'long', month: 'short', day: 'numeric' };
+    const options = { weekday: "long", month: "short", day: "numeric" };
     const date = new Date(dateStr);
     return date.toLocaleDateString(undefined, options);
   };
 
   return (
-    <div className={isDarkMode ? "dark min-h-screen bg-gradient-to-br from-gray-900 to-gray-700 p-6" : "min-h-screen bg-gradient-to-br from-sky-200 to-indigo-300 p-6"}>
+    <div
+      className={`min-h-screen p-6 transition-colors duration-500 ${
+        isDarkMode
+          ? "dark bg-gradient-to-br from-gray-900 to-gray-700"
+          : "bg-gradient-to-br from-sky-200 to-indigo-300"
+      }`}
+    >
       <NavBar
         isDarkMode={isDarkMode}
         onOpenSettings={() => setShowSettings(true)}
@@ -131,26 +136,41 @@ export default function WeatherApp() {
 
       {weather && (
         <div
-          className={`max-w-md mx-auto mt-6 rounded-lg shadow-lg p-4 ${
-            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+          className={`max-w-md mx-auto mt-6 rounded-lg shadow-lg p-4 transition-colors duration-500 ${
+            isDarkMode
+              ? "bg-gray-800 text-white"
+              : "bg-white text-gray-900"
           }`}
         >
           <h2 className="text-xl font-semibold">Current Weather</h2>
-          <p>Location: {weather.location.name}, {weather.location.country}</p>
-          <p>Temperature: {isFahrenheit ? weather.current.temp_f : weather.current.temp_c}°{isFahrenheit ? "F" : "C"}</p>
+          <p>
+            Location: {weather.location.name}, {weather.location.country}
+          </p>
+          <p>
+            Temperature:{" "}
+            {isFahrenheit
+              ? weather.current.temp_f
+              : weather.current.temp_c}
+            °{isFahrenheit ? "F" : "C"}
+          </p>
           <p>Condition: {weather.current.condition.text}</p>
-          <img src={weather.current.condition.icon} alt="weather icon" />
+          <img
+            src={weather.current.condition.icon}
+            alt="weather icon"
+          />
         </div>
       )}
 
       {weather && (
         <div className="max-w-md mx-auto mt-6">
-          <h2 className="text-xl font-bold text-white mb-2">7-Day Forecast</h2>
+          <h2 className="text-xl font-bold text-white mb-2">
+            7-Day Forecast
+          </h2>
           <div className="grid grid-cols-1 gap-4">
             {weather.forecast.forecastday.map((day) => (
               <div
                 key={day.date}
-                className="bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white rounded-lg p-4 shadow cursor-pointer"
+                className="rounded-lg p-4 shadow cursor-pointer transition-colors duration-500 bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white"
                 onClick={() =>
                   setSelectedDay(selectedDay === day.date ? null : day.date)
                 }
@@ -165,7 +185,10 @@ export default function WeatherApp() {
                   <p>{day.day.condition.text}</p>
                 </div>
                 <p>
-                  {isFahrenheit ? day.day.mintemp_f : day.day.mintemp_c}°{isFahrenheit ? "F" : "C"} — {isFahrenheit ? day.day.maxtemp_f : day.day.maxtemp_c}°{isFahrenheit ? "F" : "C"}
+                  {isFahrenheit ? day.day.mintemp_f : day.day.mintemp_c}°
+                  {isFahrenheit ? "F" : "C"} —{" "}
+                  {isFahrenheit ? day.day.maxtemp_f : day.day.maxtemp_c}°
+                  {isFahrenheit ? "F" : "C"}
                 </p>
 
                 {selectedDay === day.date && (
@@ -179,8 +202,8 @@ export default function WeatherApp() {
                           {is24Hour
                             ? hour.time.split(" ")[1]
                             : new Date(hour.time).toLocaleTimeString(undefined, {
-                                hour: 'numeric',
-                                minute: '2-digit',
+                                hour: "numeric",
+                                minute: "2-digit",
                                 hour12: true,
                               })}
                         </p>
@@ -190,7 +213,10 @@ export default function WeatherApp() {
                             alt={hour.condition.text}
                             className="w-5 h-5"
                           />
-                          <span>{isFahrenheit ? hour.temp_f : hour.temp_c}°{isFahrenheit ? "F" : "C"}</span>
+                          <span>
+                            {isFahrenheit ? hour.temp_f : hour.temp_c}°
+                            {isFahrenheit ? "F" : "C"}
+                          </span>
                         </div>
                       </div>
                     ))}
