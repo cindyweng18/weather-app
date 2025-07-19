@@ -13,6 +13,8 @@ export default function WeatherApp() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+  const [suggestionLoading, setSuggestionLoading] = useState(false);
+
 
   const fetchWeather = async (city) => {
     try {
@@ -49,6 +51,7 @@ export default function WeatherApp() {
 
     if (value.length > 2) {
       try {
+        setSuggestionLoading(true);
         const res = await fetch(
           `https://api.weatherapi.com/v1/search.json?key=${process.env.REACT_APP_WEATHERAPI_KEY}&q=${value}`
         );
@@ -56,6 +59,8 @@ export default function WeatherApp() {
         setSuggestions(data);
       } catch (err) {
         console.error("Autocomplete failed:", err);
+      } finally {
+        setSuggestionLoading(false);
       }
     } else {
       setSuggestions([]);
@@ -94,7 +99,7 @@ export default function WeatherApp() {
 
       <div className="max-w-md mx-auto">
         <div className="relative">
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <input
               type="text"
               className="w-full px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring focus:border-blue-300"
@@ -103,6 +108,7 @@ export default function WeatherApp() {
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
             />
+            {suggestionLoading && <Spinner />}
             <button
               onClick={() => fetchWeather(query)}
               className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
@@ -131,7 +137,15 @@ export default function WeatherApp() {
         </div>
       </div>
 
-      {loading && <p className="text-center mt-4 text-white">Loading...</p>}
+      {loading && (
+        <div className="max-w-md mx-auto mt-6 bg-white dark:bg-gray-800 text-center rounded-lg shadow-lg p-6 text-gray-900 dark:text-white">
+          <div className="flex justify-center mb-2">
+            <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+          </div>
+          <p className="text-lg font-semibold">Fetching weather data...</p>
+        </div>
+      )}
+
       {error && <p className="text-center mt-4 text-red-600">{error}</p>}
 
       {weather && (
@@ -228,5 +242,11 @@ export default function WeatherApp() {
         </div>
       )}
     </div>
+  );
+}
+
+export function Spinner() {
+  return (
+    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500"></div>
   );
 }
