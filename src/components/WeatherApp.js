@@ -138,13 +138,16 @@ export default function WeatherApp() {
       </div>
 
       {loading && (
-        <div className="max-w-md mx-auto mt-6 bg-white dark:bg-gray-800 text-center rounded-lg shadow-lg p-6 text-gray-900 dark:text-white">
-          <div className="flex justify-center mb-2">
-            <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+        <>
+          <SkeletonCard />
+          <div className="max-w-md mx-auto mt-6 grid grid-cols-1 gap-4">
+            {[...Array(3)].map((_, i) => (
+              <SkeletonForecastCard key={i} />
+            ))}
           </div>
-          <p className="text-lg font-semibold">Fetching weather data...</p>
-        </div>
+        </>
       )}
+
 
       {error && <p className="text-center mt-4 text-red-600">{error}</p>}
 
@@ -248,5 +251,38 @@ export default function WeatherApp() {
 export function Spinner() {
   return (
     <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500"></div>
+  );
+}
+
+function SkeletonLine({ width = "w-full", height = "h-4", className = "" }) {
+  return (
+    <div
+      className={`bg-gray-300 dark:bg-gray-700 rounded ${width} ${height} animate-pulse ${className}`}
+    ></div>
+  );
+}
+
+export function SkeletonCard() {
+  return (
+    <div className="max-w-md mx-auto mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
+      <SkeletonLine width="w-3/4" height="h-6" className="mb-4" />
+      <SkeletonLine width="w-1/2" className="mb-2" />
+      <SkeletonLine width="w-1/3" className="mb-2" />
+      <SkeletonLine width="w-2/3" className="mb-4" />
+      <div className="w-16 h-16 bg-gray-300 dark:bg-gray-700 rounded-full animate-pulse mx-auto" />
+    </div>
+  );
+}
+
+export function SkeletonForecastCard() {
+  return (
+    <div className="bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white rounded-lg p-4 shadow">
+      <SkeletonLine width="w-2/3" height="h-5" className="mb-2" />
+      <div className="flex items-center gap-2 mb-2">
+        <div className="w-8 h-8 bg-gray-300 dark:bg-gray-700 rounded-full animate-pulse" />
+        <SkeletonLine width="w-3/4" height="h-4" />
+      </div>
+      <SkeletonLine width="w-1/2" />
+    </div>
   );
 }
