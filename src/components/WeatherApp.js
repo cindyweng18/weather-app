@@ -187,13 +187,25 @@ export default function WeatherApp() {
             {weather.forecast.forecastday.map((day) => (
               <div
                 key={day.date}
-                className="rounded-lg p-4 shadow cursor-pointer transition-colors duration-500 bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white"
+                className={`bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white rounded-lg p-4 shadow cursor-pointer transition duration-200 hover:ring-2 hover:ring-blue-400 ${
+                  selectedDay === day.date ? "ring-2 ring-blue-500" : ""
+                }`}
                 onClick={() =>
                   setSelectedDay(selectedDay === day.date ? null : day.date)
                 }
               >
-                <p className="font-semibold">{formatDate(day.date)}</p>
-                <div className="flex items-center gap-2">
+                <div className="flex justify-between items-center">
+                  <p className="font-semibold">{formatDate(day.date)}</p>
+                  <span
+                    className={`transform transition-transform duration-200 ${
+                      selectedDay === day.date ? "rotate-180" : ""
+                    }`}
+                  >
+                    ▼
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 mt-1">
                   <img
                     src={day.day.condition.icon}
                     alt={day.day.condition.text}
@@ -207,6 +219,12 @@ export default function WeatherApp() {
                   {isFahrenheit ? day.day.maxtemp_f : day.day.maxtemp_c}°
                   {isFahrenheit ? "F" : "C"}
                 </p>
+
+                {selectedDay !== day.date && (
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    Click to view hourly forecast
+                  </p>
+                )}
 
                 {selectedDay === day.date && (
                   <div className="mt-2 space-y-1 max-h-72 overflow-y-auto">
