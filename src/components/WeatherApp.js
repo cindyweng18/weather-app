@@ -22,7 +22,7 @@ export default function WeatherApp() {
       setError(null);
 
       const res = await fetch(
-        `https://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_WEATHERAPI_KEY}&q=${city}&days=7`
+        `https://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_WEATHERAPI_KEY}&q=${city}&days=3`
       );
       const data = await res.json();
 
@@ -181,84 +181,92 @@ export default function WeatherApp() {
       {weather && (
         <div className="max-w-md mx-auto mt-6">
           <h2 className="text-xl font-bold text-white mb-2">
-            7-Day Forecast
+            3-Day Forecast
           </h2>
           <div className="grid grid-cols-1 gap-4">
-            {weather.forecast.forecastday.map((day) => (
-              <div
-                key={day.date}
-                className={`bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white rounded-lg p-4 shadow cursor-pointer transition duration-200 hover:ring-2 hover:ring-blue-400 ${
-                  selectedDay === day.date ? "ring-2 ring-blue-500" : ""
-                }`}
-                onClick={() =>
-                  setSelectedDay(selectedDay === day.date ? null : day.date)
-                }
-              >
-                <div className="flex justify-between items-center">
-                  <p className="font-semibold">{formatDate(day.date)}</p>
-                  <span
-                    className={`transform transition-transform duration-200 ${
-                      selectedDay === day.date ? "rotate-180" : ""
+            {weather.forecast.forecastday.map((day) => {
+              const isExpanded = selectedDay === day.date;
+
+              return (
+                <div
+                  key={day.date}
+                  className={`bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white rounded-lg p-4 shadow cursor-pointer transition duration-200 hover:ring-2 hover:ring-blue-400 ${
+                    isExpanded ? "ring-2 ring-blue-500" : ""
+                  }`}
+                  onClick={() =>
+                    setSelectedDay(isExpanded ? null : day.date)
+                  }
+                >
+                  <div className="flex justify-between items-center">
+                    <p className="font-semibold">{formatDate(day.date)}</p>
+                    <span
+                      className={`transform transition-transform duration-200 ${
+                        isExpanded ? "rotate-180" : ""
+                      }`}
+                    >
+                      ▼
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 mt-1">
+                    <img
+                      src={day.day.condition.icon}
+                      alt={day.day.condition.text}
+                      className="w-8 h-8"
+                    />
+                    <p>{day.day.condition.text}</p>
+                  </div>
+                  <p>
+                    {isFahrenheit ? day.day.mintemp_f : day.day.mintemp_c}°
+                    {isFahrenheit ? "F" : "C"} —{" "}
+                    {isFahrenheit ? day.day.maxtemp_f : day.day.maxtemp_c}°
+                    {isFahrenheit ? "F" : "C"}
+                  </p>
+
+                  {!isExpanded && (
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      Click to view hourly forecast
+                    </p>
+                  )}
+
+                  <div
+                    className={`transition-all duration-500 overflow-hidden ${
+                      isExpanded ? "max-h-[1000px] mt-2" : "max-h-0"
                     }`}
                   >
-                    ▼
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 mt-1">
-                  <img
-                    src={day.day.condition.icon}
-                    alt={day.day.condition.text}
-                    className="w-8 h-8"
-                  />
-                  <p>{day.day.condition.text}</p>
-                </div>
-                <p>
-                  {isFahrenheit ? day.day.mintemp_f : day.day.mintemp_c}°
-                  {isFahrenheit ? "F" : "C"} —{" "}
-                  {isFahrenheit ? day.day.maxtemp_f : day.day.maxtemp_c}°
-                  {isFahrenheit ? "F" : "C"}
-                </p>
-
-                {selectedDay !== day.date && (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    Click to view hourly forecast
-                  </p>
-                )}
-
-                {selectedDay === day.date && (
-                  <div className="mt-2 space-y-1 max-h-72 overflow-y-auto">
-                    {day.hour.map((hour) => (
-                      <div
-                        key={hour.time_epoch}
-                        className="flex justify-between text-sm border-b pb-1"
-                      >
-                        <p>
-                          {is24Hour
-                            ? hour.time.split(" ")[1]
-                            : new Date(hour.time).toLocaleTimeString(undefined, {
-                                hour: "numeric",
-                                minute: "2-digit",
-                                hour12: true,
-                              })}
-                        </p>
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={hour.condition.icon}
-                            alt={hour.condition.text}
-                            className="w-5 h-5"
-                          />
-                          <span>
-                            {isFahrenheit ? hour.temp_f : hour.temp_c}°
-                            {isFahrenheit ? "F" : "C"}
-                          </span>
+                    <div className="space-y-1 max-h-72 overflow-y-auto pr-2">
+                      {day.hour.map((hour) => (
+                        <div
+                          key={hour.time_epoch}
+                          className="flex justify-between text-sm border-b pb-1"
+                        >
+                          <p>
+                            {is24Hour
+                              ? hour.time.split(" ")[1]
+                              : new Date(hour.time).toLocaleTimeString(undefined, {
+                                  hour: "numeric",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                })}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <img
+                              src={hour.condition.icon}
+                              alt={hour.condition.text}
+                              className="w-5 h-5"
+                            />
+                            <span>
+                              {isFahrenheit ? hour.temp_f : hour.temp_c}°
+                              {isFahrenheit ? "F" : "C"}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
