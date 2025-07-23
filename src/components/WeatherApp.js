@@ -179,18 +179,16 @@ export default function WeatherApp() {
       )}
 
       {weather && (
-        <div className="max-w-md mx-auto mt-6">
-          <h2 className="text-xl font-bold text-white mb-2">
-            3-Day Forecast
-          </h2>
-          <div className="grid grid-cols-1 gap-4">
+        <div className="w-full max-w-6xl mx-auto mt-6 px-4">
+          <h2 className="text-xl font-bold text-white mb-4">3-Day Forecast</h2>
+            <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scroll-smooth">
             {weather.forecast.forecastday.map((day) => {
               const isExpanded = selectedDay === day.date;
 
               return (
                 <div
                   key={day.date}
-                  className={`bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white rounded-lg p-4 shadow cursor-pointer transition duration-200 hover:ring-2 hover:ring-blue-400 ${
+                  className={`min-w-[320px] flex-shrink-0 bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white rounded-lg p-4 shadow cursor-pointer transition duration-200 hover:ring-2 hover:ring-blue-400 snap-start ${
                     isExpanded ? "ring-2 ring-blue-500" : ""
                   }`}
                   onClick={() =>
