@@ -15,7 +15,6 @@ export default function WeatherApp() {
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionLoading, setSuggestionLoading] = useState(false);
 
-
   const fetchWeather = async (city) => {
     try {
       setLoading(true);
@@ -75,7 +74,7 @@ export default function WeatherApp() {
 
   return (
     <div
-      className={`min-h-screen p-6 transition-colors duration-500 ${
+      className={`min-h-screen px-4 py-6 sm:p-6 transition-colors duration-500 ${
         isDarkMode
           ? "dark bg-gradient-to-br from-gray-900 to-gray-700"
           : "bg-gradient-to-br from-sky-200 to-indigo-300"
@@ -97,12 +96,12 @@ export default function WeatherApp() {
         />
       )}
 
-      <div className="max-w-md mx-auto">
+      <div className="max-w-full sm:max-w-md mx-auto">
         <div className="relative">
-          <div className="flex gap-2 items-center">
+          <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
             <input
               type="text"
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+              className="flex-1 px-4 py-3 text-base rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring focus:border-blue-300"
               placeholder="Enter city name..."
               value={query}
               onChange={handleInputChange}
@@ -111,14 +110,14 @@ export default function WeatherApp() {
             {suggestionLoading && <Spinner />}
             <button
               onClick={() => fetchWeather(query)}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
+              className="px-4 py-3 text-base bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
             >
               Enter
             </button>
           </div>
 
           {suggestions.length > 0 && (
-            <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow mt-1 max-h-60 overflow-y-auto text-black">
+            <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow mt-1 max-h-60 overflow-y-auto text-black text-sm sm:text-base">
               {suggestions.map((item) => (
                 <li
                   key={item.id}
@@ -148,52 +147,40 @@ export default function WeatherApp() {
         </>
       )}
 
-
       {error && <p className="text-center mt-4 text-red-600">{error}</p>}
 
       {weather && (
         <div
-          className={`max-w-md mx-auto mt-6 rounded-lg shadow-lg p-4 transition-colors duration-500 ${
-            isDarkMode
-              ? "bg-gray-800 text-white"
-              : "bg-white text-gray-900"
+          className={`max-w-full sm:max-w-md mx-auto mt-6 rounded-lg shadow-lg p-4 transition-colors duration-500 ${
+            isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
           }`}
         >
-          <h2 className="text-xl font-semibold">Current Weather</h2>
+          <h2 className="text-lg sm:text-xl font-semibold">Current Weather</h2>
           <p>
             Location: {weather.location.name}, {weather.location.country}
           </p>
           <p>
-            Temperature:{" "}
-            {isFahrenheit
-              ? weather.current.temp_f
-              : weather.current.temp_c}
-            °{isFahrenheit ? "F" : "C"}
+            Temperature: {isFahrenheit ? weather.current.temp_f : weather.current.temp_c}°
+            {isFahrenheit ? "F" : "C"}
           </p>
           <p>Condition: {weather.current.condition.text}</p>
-          <img
-            src={weather.current.condition.icon}
-            alt="weather icon"
-          />
+          <img src={weather.current.condition.icon} alt="weather icon" />
         </div>
       )}
 
       {weather && (
-        <div className="w-full max-w-6xl mx-auto mt-6 px-4">
-          <h2 className="text-xl font-bold text-white mb-4">3-Day Forecast</h2>
-            <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scroll-smooth">
+        <div className="w-full max-w-6xl mx-auto mt-6 px-2 sm:px-4">
+          <h2 className="text-lg sm:text-xl font-bold text-white mb-4">3-Day Forecast</h2>
+          <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scroll-smooth">
             {weather.forecast.forecastday.map((day) => {
               const isExpanded = selectedDay === day.date;
-
               return (
                 <div
                   key={day.date}
-                  className={`min-w-[320px] flex-shrink-0 bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white rounded-lg p-4 shadow cursor-pointer transition duration-200 hover:ring-2 hover:ring-blue-400 snap-start ${
+                  className={`min-w-[260px] sm:min-w-[320px] flex-shrink-0 bg-white bg-opacity-90 dark:bg-gray-800 dark:text-white rounded-lg p-4 shadow cursor-pointer transition duration-200 hover:ring-2 hover:ring-blue-400 snap-start ${
                     isExpanded ? "ring-2 ring-blue-500" : ""
                   }`}
-                  onClick={() =>
-                    setSelectedDay(isExpanded ? null : day.date)
-                  }
+                  onClick={() => setSelectedDay(isExpanded ? null : day.date)}
                 >
                   <div className="flex justify-between items-center">
                     <p className="font-semibold">{formatDate(day.date)}</p>
@@ -215,10 +202,7 @@ export default function WeatherApp() {
                     <p>{day.day.condition.text}</p>
                   </div>
                   <p>
-                    {isFahrenheit ? day.day.mintemp_f : day.day.mintemp_c}°
-                    {isFahrenheit ? "F" : "C"} —{" "}
-                    {isFahrenheit ? day.day.maxtemp_f : day.day.maxtemp_c}°
-                    {isFahrenheit ? "F" : "C"}
+                    {isFahrenheit ? day.day.mintemp_f : day.day.mintemp_c}°{isFahrenheit ? "F" : "C"} — {isFahrenheit ? day.day.maxtemp_f : day.day.maxtemp_c}°{isFahrenheit ? "F" : "C"}
                   </p>
 
                   {!isExpanded && (
@@ -227,16 +211,12 @@ export default function WeatherApp() {
                     </p>
                   )}
 
-                  <div
-                    className={`transition-all duration-500 overflow-hidden ${
-                      isExpanded ? "max-h-[1000px] mt-2" : "max-h-0"
-                    }`}
-                  >
-                    <div className="space-y-1 max-h-72 overflow-y-auto pr-2">
+                  <div className={`transition-all duration-500 overflow-hidden ${isExpanded ? "max-h-[1000px] mt-2" : "max-h-0"}`}>
+                    <div className="space-y-1 max-h-72 overflow-y-auto pr-1 sm:pr-2">
                       {day.hour.map((hour) => (
                         <div
                           key={hour.time_epoch}
-                          className="flex justify-between text-sm border-b pb-1"
+                          className="flex justify-between text-xs sm:text-sm border-b pb-1"
                         >
                           <p>
                             {is24Hour
@@ -273,22 +253,16 @@ export default function WeatherApp() {
 }
 
 export function Spinner() {
-  return (
-    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500"></div>
-  );
+  return <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-blue-500"></div>;
 }
 
 function SkeletonLine({ width = "w-full", height = "h-4", className = "" }) {
-  return (
-    <div
-      className={`bg-gray-300 dark:bg-gray-700 rounded ${width} ${height} animate-pulse ${className}`}
-    ></div>
-  );
+  return <div className={`bg-gray-300 dark:bg-gray-700 rounded ${width} ${height} animate-pulse ${className}`}></div>;
 }
 
 export function SkeletonCard() {
   return (
-    <div className="max-w-md mx-auto mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
+    <div className="max-w-full sm:max-w-md mx-auto mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
       <SkeletonLine width="w-3/4" height="h-6" className="mb-4" />
       <SkeletonLine width="w-1/2" className="mb-2" />
       <SkeletonLine width="w-1/3" className="mb-2" />
