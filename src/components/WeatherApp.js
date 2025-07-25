@@ -14,11 +14,13 @@ export default function WeatherApp() {
   const [showSettings, setShowSettings] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [suggestionLoading, setSuggestionLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState(null);
 
   const fetchWeather = async (city) => {
     try {
       setLoading(true);
       setError(null);
+      setAlertMessage(null); // clear any previous alert
 
       const res = await fetch(
         `https://api.weatherapi.com/v1/forecast.json?key=${process.env.REACT_APP_WEATHERAPI_KEY}&q=${city}&days=3`
@@ -30,6 +32,19 @@ export default function WeatherApp() {
       }
 
       setWeather(data);
+
+      const upcomingHours = data.forecast.forecastday[0].hour.slice(0, 12);
+
+      const alertHour = upcomingHours.find((hour) =>
+        hour.condition.text.toLowerCase().includes("rain") ||
+        hour.condition.text.toLowerCase().includes("snow")
+      );
+
+      if (alertHour) {
+        const isSnow = alertHour.condition.text.toLowerCase().includes("snow");
+        const type = isSnow ? "Snow" : "Rain";
+        setAlertMessage(`🌨️ Heads up! ${type} is expected within the next 12 hours.`);
+      }
     } catch (err) {
       setError(err.message);
       setWeather(null);
@@ -37,6 +52,7 @@ export default function WeatherApp() {
       setLoading(false);
     }
   };
+
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -84,6 +100,7 @@ export default function WeatherApp() {
         isDarkMode={isDarkMode}
         onOpenSettings={() => setShowSettings(true)}
       />
+      
       {showSettings && (
         <Settings
           isFahrenheit={isFahrenheit}
@@ -95,6 +112,11 @@ export default function WeatherApp() {
           onClose={() => setShowSettings(false)}
         />
       )}
+        {alertMessage && (
+          <div className="max-w-md mx-auto mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900 rounded shadow-md animate-fade-in">
+            {alertMessage}
+          </div>
+        )}
 
       <div className="max-w-full sm:max-w-md mx-auto">
         <div className="relative">
