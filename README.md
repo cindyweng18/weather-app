@@ -1,3 +1,6 @@
+# Cindy's Weather App
+A simple weather forecast frontend app using React and WeatherAPI.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
